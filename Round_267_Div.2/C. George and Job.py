@@ -25,8 +25,8 @@
 
 # https://codeforces.com/contest/467/problem/C
 
-# [n, m, k] = [int(i) for i in input().split(' ')]
-# p = [int(i) for i in input().split(' ')]
+[n, m, k] = [int(i) for i in input().split(' ')]
+p = [int(i) for i in input().split(' ')]
 
 # [n, m, k] = [5,2,1]
 # p = [1, 2, 3, 4, 5]  # 9
@@ -35,25 +35,38 @@
 # p = [2, 10, 7, 18, 5, 33, 0]  # 61
 from functools import lru_cache
 
-[n, m, k] = [int(i) for i in '20 5 3'.split(' ')]
-p = [int(i) for i in '96 46 67 36 59 95 88 43 92 58 1 31 69 35 36 77 56 27 3 23'.split(' ')]
+# [n, m, k] = [int(i) for i in '20 5 3'.split(' ')]  # 953
+# p = [int(i) for i in '96 46 67 36 59 95 88 43 92 58 1 31 69 35 36 77 56 27 3 23'.split(' ')]
 
-@lru_cache(None)
-def helper(idx, num):  # 从p[idx] 开始找 num 个子数组和的最大值
-    if idx + m * k - 1 >= n:
-        return False, -1
-    ans = 0
-    for i in range(idx, n - m + 1):
-        if num > 1:
-            res = helper(i + m, num - 1)
-            if not res[0]:
-                ans = max(ans, sum(p[i: i + m]))
-                return True, ans
-            ans = max(ans, sum(p[i: i + m]) + res[1])
-        else:
-            ans = max(ans, sum(p[i: i + m]))
-    return True, ans
+dp = [[0 for _ in range(n)] for _ in range(k)]
+prefixS = []
+s = 0
+ms = 0
+max_ms = 0
+
+for j in range(n):
+    s += p[j]
+    ms += p[j]
+    prefixS.append(s)
+    if j == m - 1:
+        max_ms = ms
+        dp[0][j] = ms
+    if j >= m:
+        ms -= p[j - m]
+        max_ms = max(max_ms, ms)
+        dp[0][j] = max_ms
+
+for i in range(k):
+    for j in range(m - 1):
+        dp[i][j] = 0
+    dp[i][m - 1] = prefixS[m - 1]
+
+# print(dp)
+# print(prefixS)
+
+for i in range(1, k):
+    for j in range(m, n):
+        dp[i][j] = max(dp[i - 1][j - m] + prefixS[j] - prefixS[j - m], dp[i][j - 1])
+print(dp[-1][-1])
 
 
-res = helper(0, k)
-print(res[1])
