@@ -41,32 +41,26 @@ from functools import lru_cache
 dp = [[0 for _ in range(n)] for _ in range(k)]
 prefixS = []
 s = 0
-ms = 0
-max_ms = 0
 
 for j in range(n):
     s += p[j]
-    ms += p[j]
     prefixS.append(s)
-    if j == m - 1:
-        max_ms = ms
-        dp[0][j] = ms
-    if j >= m:
-        ms -= p[j - m]
-        max_ms = max(max_ms, ms)
-        dp[0][j] = max_ms
-
-for i in range(k):
-    for j in range(m - 1):
-        dp[i][j] = 0
-    dp[i][m - 1] = prefixS[m - 1]
 
 # print(dp)
 # print(prefixS)
+# dp[i][j] 表示前j+1个字符，构造i+1个长度为m的子数组最大和
 
-for i in range(1, k):
-    for j in range(m, n):
-        dp[i][j] = max(dp[i - 1][j - m] + prefixS[j] - prefixS[j - m], dp[i][j - 1])
+for i in range(0, k):
+    for j in range(n):
+        if j < m - 1:
+            dp[i][j] = 0
+        elif j == m - 1:
+            dp[i][j] = prefixS[m - 1]
+        else:
+            if i > 0:
+                dp[i][j] = max(dp[i - 1][j - m] + prefixS[j] - prefixS[j - m], dp[i][j - 1])
+            else:
+                dp[i][j] = max(prefixS[j] - prefixS[j - m], dp[i][j - 1])
 print(dp[-1][-1])
 
 
