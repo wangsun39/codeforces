@@ -49,8 +49,8 @@
 from collections import Counter
 
 def walk():
-    # n = int(input())
-    # seq = [int(i) for i in input().split(' ')]
+    n = int(input())
+    seq = [int(i) for i in input().split(' ')]
 
     # n = 8  # 3 3
     # seq = [int(i) for i in '1 2 3 6 9 8 5 2'.split(' ')]
@@ -58,8 +58,8 @@ def walk():
     # seq = [int(i) for i in '1 2 1 2 5 3'.split(' ')]
     # n = 2  # NO
     # seq = [int(i) for i in '1 10'.split(' ')]
-    n = 200000  # NO
-    seq = [i for i in range(1, 200001)]
+    # n = 200000  # NO
+    # seq = [i for i in range(1, 200001)]
 
     sub = [seq[i] - seq[i - 1] for i in range(1, n)]
     counter = Counter(sub)
@@ -81,7 +81,7 @@ def walk():
         print('%d %d' % (max(seq), col))
         return
 
-    curi, curj = seq[0] // col + 1, seq[0] % col + 1
+    curi, curj = seq[0] // col + 1, (seq[0] - 1) % col + 1
     row = curi
     for e in sub:
         if e > 1:
@@ -89,6 +89,11 @@ def walk():
             row = max(row, curi)
         elif e < -1:
             curi -= 1
+        else:
+            curj += e
+            if curj <= 0 or curj > col:
+                print('NO')
+                return
     print('YES')
     print('%d %d' % (row, col))
 
