@@ -49,40 +49,33 @@
 
 MOD = 998244353
 
-def func():
-    # [n, m] = [int(i) for i in input().split(' ')]
-    # a = input()
-    # b = input()
-    n, m = 4, 4
-    a, b = '1010', '1101'
-    nums = [0] * n
-    if m < n:
-        b = '0' * (n - m) + b
-    i, j = 0, 0
-    while i < n:
-        if m - 1 - j < 0:
-            nums[n - 1 - i] = j - i
-            i += 1
-            continue
-        if b[m - 1 - j] == '1':
-            j += 1
-            continue
-        while i <= j:
-            nums[n - 1 - i] = j - i
-            i += 1
-        j += 1
-    print(nums)
-    base = 1
+def func():  # 计算a中每个1对ans的贡献
+    [n, m] = [int(i) for i in input().split(' ')]
+    a = input()
+    b = input()
+    # n, m = 4, 4
+    # a, b = '1010', '1101'
+    # n, m = 4, 5
+    # a, b = '1001', '10101'
+
+    if len(a) < len(b):
+        a = '0' * (len(b) - len(a)) + a
+    else:
+        b = '0' * (len(a) - len(b)) + b
+    N = max(n, m)
+    oneNum = b.count('1')
+    i, base, cnt = N - 1, 1, 0
     ans = 0
-    i = -1
-    while i < n:
-        i += 1
-        if a[n - 1 - i] == '0':
-            base *= 2
-            base %= MOD
-            continue
-        ans += (base * nums[n - 1 - i])
-        ans %= MOD
+    while i >= 0:
+        if a[i] == '1':
+            ans += (base * (oneNum - cnt))
+            ans %= MOD
+        base *= 2
+        base %= MOD
+        if b[i] == '1':
+            cnt += 1
+        i -= 1
+
     print(ans)
 
 
